@@ -49,7 +49,7 @@ def process_games(games, model, model_2, x_train):
                         states_2.append(game[i].copy())  # Ajouter l'état du jeu à la liste des états pour le joueur 2
                         q_values_2.append(reward_vector.copy())  # Ajouter la valeur Q correspondante à la liste des valeurs Q pour le joueur 2
 
-    if x_train:
+    if x_train == False:
         # Entraîner le modèle pour le joueur X
 
         # Préparer les données d'entraînement en mélangeant les états et les valeurs Q
