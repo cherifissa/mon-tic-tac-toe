@@ -40,7 +40,7 @@ def train():
         # Affichage de l'indicateur x_train
         print(x_train)
         # Nombre total de parties à jouer
-        total_games = 1000
+        total_games = 4000
         # Paramètre de l'epsilon-greedy
         e_greedy = .7
 
@@ -136,7 +136,7 @@ def train():
             games.append(current_game)
 
             # Affichage de la taille de la liste des parties
-            print("la taille de games est :", len(games))
+            print("la taille deu game est :", len(games))
 
         # Traitement des parties pour entraîner les modèles
         x_train = process_games(games, model, model_2, x_train)
@@ -229,9 +229,102 @@ def play():
             running = False
             print(get_outcome(board), 'a gagné le jeu!')
 
+def playAIvsIA():
+    print('')
+    print('Un nouveau jeu commence !')
+    print('')
+
+    # Sélection aléatoire de l'équipe de départ pour l'IA.
+    team = random.choice(['x', 'o'])
+
+    board = [0, 0, 0, 0, 0, 0, 0, 0, 0]  # Initialisation du plateau de jeu.
+    running = True  # Variable pour indiquer si le jeu est en cours.
+    x_turn = True  # Variable pour suivre le tour de jeu.
+
+    while running:  # Boucle principale du jeu.
+        if (x_turn and team == 'o') or (not x_turn and not team == 'o'):
+            # Si c'est le tour de l'IA.
+            if team == 'x':
+                pre = model.predict(np.asarray([one_hot(board)]))[0]
+            elif team == 'o':
+                pre = model_2.predict(np.asarray([one_hot(board)]))[0]
+
+            highest = -1000  # Initialisation de la valeur de prévision la plus élevée.
+            num = -1  # Initialisation de l'index du mouvement.
+
+            # Sélection du mouvement avec la prévision la plus élevée.
+            for j in range(0, 9):
+                if board[j] == 0:
+                    if pre[j] > highest:
+                        highest = pre[j].copy()
+                        num = j
+
+            # Mise à jour du plateau en fonction du mouvement sélectionné.
+            if team == 'o':
+                board[num] = 1
+            elif team == 'x':
+                board[num] = -1
+            x_turn = not x_turn  # Passage au tour suivant.
+
+        else:  # Tour de l'adversaire de l'IA.
+            if team == 'x':
+                pre = model.predict(np.asarray([one_hot(board)]))[0]
+            elif team == 'o':
+                pre = model_2.predict(np.asarray([one_hot(board)]))[0]
+
+            highest = -1000  # Initialisation de la valeur de prévision la plus élevée.
+            num = -1  # Initialisation de l'index du mouvement.
+
+            # Sélection du mouvement avec la prévision la plus élevée.
+            for j in range(0, 9):
+                if board[j] == 0:
+                    if pre[j] > highest:
+                        highest = pre[j].copy()
+                        num = j
+
+            # Mise à jour du plateau en fonction du mouvement sélectionné.
+            if team == 'x':
+                board[num] = 1
+            elif team == 'o':
+                board[num] = -1
+            x_turn = not x_turn  # Passage au tour suivant.
+
+        r_board = []
+
+        # Conversion des valeurs du plateau pour l'affichage.
+        for square in board:
+            if square == 0:
+                r_board.append('-')
+            elif square == 1:
+                r_board.append('x')
+            elif square == -1:
+                r_board.append('o')
+
+        # Affichage du plateau de jeu.
+        print(r_board[0], r_board[1], r_board[2])
+        print(r_board[3], r_board[4], r_board[5])
+        print(r_board[6], r_board[7], r_board[8])
+
+        full = True
+
+        # Vérification si le plateau est plein.
+        for square in board:
+            if square == 0:
+                full = False
+
+        # Vérification du résultat de la partie.
+        if full:
+            running = False
+            if get_outcome(board) == 0:
+                print('Le jeu était nul !')  # Affichage en cas de match nul.
+
+        if not get_outcome(board) == 0:
+            running = False
+            print(get_outcome(board), 'a gagné le jeu!')  # Affichage du gagnant de la partie.
+
 if mode == 'training':
     train()
 elif mode == 'playing':
-    play()
+    playAIvsIA()
 
 

@@ -14,7 +14,7 @@ def play():
     while running:  # Boucle principale du jeu.
         if (x_turn and team == 'o') or (not x_turn and not team == 'o'):
             # Si c'est le tour de l'IA.
-            if team == 'o':
+            if team == 'x':
                 pre = model.predict(np.asarray([one_hot(board)]))[0]
             else:
                 pre = model_2.predict(np.asarray([one_hot(board)]))[0]
@@ -89,9 +89,7 @@ def play():
 
 
 
-
-
-def play():
+def playAIvsIA():
     print('')
     print('Un nouveau jeu commence !')
     print('')
@@ -106,9 +104,9 @@ def play():
     while running:  # Boucle principale du jeu.
         if (x_turn and team == 'o') or (not x_turn and not team == 'o'):
             # Si c'est le tour de l'IA.
-            if team == 'o':
+            if team == 'x':
                 pre = model.predict(np.asarray([one_hot(board)]))[0]
-            elif team == 'x':
+            elif team == 'o':
                 pre = model_2.predict(np.asarray([one_hot(board)]))[0]
 
             highest = -1000  # Initialisation de la valeur de prévision la plus élevée.
@@ -129,9 +127,9 @@ def play():
             x_turn = not x_turn  # Passage au tour suivant.
 
         else:  # Tour de l'adversaire de l'IA.
-            if team == 'o':
+            if team == 'x':
                 pre = model.predict(np.asarray([one_hot(board)]))[0]
-            elif team == 'x':
+            elif team == 'o':
                 pre = model_2.predict(np.asarray([one_hot(board)]))[0]
 
             highest = -1000  # Initialisation de la valeur de prévision la plus élevée.
@@ -145,9 +143,9 @@ def play():
                         num = j
 
             # Mise à jour du plateau en fonction du mouvement sélectionné.
-            if team == 'o':
+            if team == 'x':
                 board[num] = 1
-            elif team == 'x':
+            elif team == 'o':
                 board[num] = -1
             x_turn = not x_turn  # Passage au tour suivant.
 

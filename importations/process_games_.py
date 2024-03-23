@@ -2,6 +2,7 @@ from keras.models import load_model
 import math
 import random
 import numpy as np
+import json
 
 from importations.get_outcome_ import get_outcome
 from importations.one_hot_ import one_hot 
@@ -49,7 +50,7 @@ def process_games(games, model, model_2, x_train):
                         states_2.append(game[i].copy())  # Ajouter l'état du jeu à la liste des états pour le joueur 2
                         q_values_2.append(reward_vector.copy())  # Ajouter la valeur Q correspondante à la liste des valeurs Q pour le joueur 2
 
-    if x_train == False:
+    if x_train:
         # Entraîner le modèle pour le joueur X
 
         # Préparer les données d'entraînement en mélangeant les états et les valeurs Q
@@ -59,10 +60,15 @@ def process_games(games, model, model_2, x_train):
         new_states = [one_hot(state) for state in states]  # Encoder les états en one-hot encoding
 
         # Entraîner le modèle avec les données préparées
-        model.fit(np.asarray(new_states), np.asarray(q_values), epochs=10, batch_size=32)
+        history = model.fit(np.asarray(new_states), np.asarray(q_values), epochs=50, batch_size=64)
+        
+        history = history.history
 
         # Sauvegarder le modèle entraîné pour le joueur X
         model.save('tic_tac_toe')
+        with open('tic_tac_toe/history.json', 'w') as h:
+            json.dump(history, h)
+        
 
         # Afficher les statistiques du jeu (victoires de X, victoires de O, matchs nuls)
         print("Le joueur X a gagné :", xt)
@@ -79,10 +85,16 @@ def process_games(games, model, model_2, x_train):
         new_states = [one_hot(state) for state in states_2]  # Encoder les états en one-hot encoding
 
         # Entraîner le modèle pour le joueur O avec les données préparées
-        model_2.fit(np.asarray(new_states), np.asarray(q_values_2), epochs=10, batch_size=32)
+        history = model_2.fit(np.asarray(new_states), np.asarray(q_values_2), epochs=25, batch_size=64)
 
+        history = history.history
+
+       
         # Sauvegarder le modèle entraîné pour le joueur O
         model_2.save('tic_tac_toe_2')
+
+        with open('tic_tac_toe_2/history.json', 'w') as h:
+            json.dump(history, h)
 
         # Afficher les statistiques du jeu (victoires de X, victoires de O, matchs nuls)
         print("Le joueur X a gagné :", xt)
