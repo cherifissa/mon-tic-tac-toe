@@ -166,7 +166,7 @@ def play():
             if team == 'o':
                 pre = model.predict(np.asarray([one_hot(board)]))[0]
             elif team == 'x':
-                pre = model_2.predict(np.asarray([one_hot(board)]))[0]
+                pre = model.predict(np.asarray([one_hot(board)]))[0]
 
             # Recherche du meilleur mouvement
             highest = -1000
