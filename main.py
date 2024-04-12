@@ -5,7 +5,7 @@ import random
 import numpy as np
 
 from importations.get_outcome_ import get_outcome
-from importations.one_hot_ import one_hot 
+from importations.one_hot_ import one_hot
 from importations.process_games_ import process_games
 
 from AgentDQN import AgentDQN
@@ -28,8 +28,10 @@ except:
 mode = input('Choisissez un mode : (training/playing) ')
 
 # Fonction pour entraîner le modèle
+
+
 def train():
-    global x_train 
+    global x_train
     jouer = True
     while jouer:
         # Initialisation du plateau de jeu, de la liste des parties et de la partie actuelle
@@ -70,7 +72,8 @@ def train():
                                 current_game.append(board.copy())
                     # Sinon, l'IA choisit le meilleur mouvement en fonction de ses prédictions
                     else:
-                        pre = model.predict(np.asarray([one_hot(board)]), batch_size=1)[0]
+                        pre = model.predict(np.asarray(
+                            [one_hot(board)]), batch_size=1)[0]
                         highest = -1000
                         num = -1
                         # Recherche du meilleur mouvement disponible
@@ -99,7 +102,8 @@ def train():
                                 current_game.append(board.copy())
                     # Sinon, l'IA choisit le meilleur mouvement en fonction de ses prédictions
                     else:
-                        pre = model_2.predict(np.asarray([one_hot(board)]), batch_size=1)[0]
+                        pre = model_2.predict(np.asarray(
+                            [one_hot(board)]), batch_size=1)[0]
                         highest = -1000
                         num = -1
                         # Recherche du meilleur mouvement disponible
@@ -113,7 +117,6 @@ def train():
                         choosing = False
                         board[num] = -1
                         current_game.append(board.copy())
-
 
                 # Vérification de la possibilité de jouer sur le plateau
                 playable = False
@@ -144,7 +147,9 @@ def train():
         jouer = False
 
 # Fonction pour jouer une partie contre l'IA
-def play():
+
+
+def playAIvsMEN():
     print('')
     print('Un nouveau jeu commence !')
     print('')
@@ -229,6 +234,7 @@ def play():
             running = False
             print(get_outcome(board), 'a gagné le jeu!')
 
+
 def playAIvsIA():
     print('')
     print('Un nouveau jeu commence !')
@@ -249,7 +255,8 @@ def playAIvsIA():
             elif team == 'o':
                 pre = model_2.predict(np.asarray([one_hot(board)]))[0]
 
-            highest = -1000  # Initialisation de la valeur de prévision la plus élevée.
+            # Initialisation de la valeur de prévision la plus élevée.
+            highest = -1000
             num = -1  # Initialisation de l'index du mouvement.
 
             # Sélection du mouvement avec la prévision la plus élevée.
@@ -272,7 +279,8 @@ def playAIvsIA():
             elif team == 'o':
                 pre = model_2.predict(np.asarray([one_hot(board)]))[0]
 
-            highest = -1000  # Initialisation de la valeur de prévision la plus élevée.
+            # Initialisation de la valeur de prévision la plus élevée.
+            highest = -1000
             num = -1  # Initialisation de l'index du mouvement.
 
             # Sélection du mouvement avec la prévision la plus élevée.
@@ -320,11 +328,17 @@ def playAIvsIA():
 
         if not get_outcome(board) == 0:
             running = False
-            print(get_outcome(board), 'a gagné le jeu!')  # Affichage du gagnant de la partie.
+            # Affichage du gagnant de la partie.
+            print(get_outcome(board), 'a gagné le jeu!')
+
 
 if mode == 'training':
     train()
 elif mode == 'playing':
-    playAIvsIA()
-
-
+    play = ""
+    while play.lower() not in ["ai", "men"]:
+        play = input('Choisissez un mode : AI vs AI/men vs AI (ai/men) ')
+    if play.lower() == 'ai':
+        playAIvsIA()
+    else:
+        playAIvsMEN()
